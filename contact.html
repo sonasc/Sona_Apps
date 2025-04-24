@@ -467,6 +467,8 @@
                           <p>Get in touch with us for personalized solutions and expert support. We're here to help with
                             any queries, service requests, or product information you may need.</p>
                         </div>
+
+                        <!-- contact page sending emails -->
                         <form id="contact_form">
                           <div class="row spacing6">
                             <div class="col-sm-12 xl:px-6">
@@ -509,11 +511,24 @@
                               </label>
                             </div>
                             <div class="btn-area">
-                              <button class="btn block primary btn-large waves-effect" type="submit">Send
+                              <button class="btn block primary btn-large waves-effect" type="submit"
+                                onclick="submit_entry();">Send
                                 Message</button>
                             </div>
+
+                            <!-- sucess message -->
+                            <div id="successMessage"
+                              style="display:none; margin-top: 20px; color: green; font-weight: bold;">
+                              Your request was submitted successfully. One of our sales team members will contact you
+                              shortly.
+                            </div>
+
                           </div>
                         </form>
+
+                        <!-- contact page sending emails END-->
+
+
                       </div>
                     </div>
                   </div>
@@ -656,6 +671,47 @@
     <script src="./assets/js/vendors/vanta/three.r119.min.js"></script>
     <script src="./assets/js/vendors/vanta/vanta.halo.min.js"></script>
     <script src="./assets/js/scripts.js"></script>
+    <script>
+      function submit_entry() {
+        var name = document.getElementById("name");
+        var email = document.getElementById("email");
+        var phone = document.getElementById("phone");
+        var company = document.getElementById("company");
+        var message = document.getElementById("message");
+
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+          "header": [
+            {
+              "subject": "Sona DBA customer enquiry",
+              "to address": email.value,
+              "title": phone.value + name.value + "," + company.value,
+              "email_body": btoa(unescape(encodeURIComponent(message.value))),
+              "ending": "Bye",
+              "token_id": "5b4ac132-0877-4edf-826d-a71fad2c85bc"
+            }
+          ]
+        });
+
+        const requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: raw,
+          redirect: "follow"
+        };
+
+        fetch("https://sonadba.aivizion.com/mail/erpmail", requestOptions)
+          .then((response) => response.text())
+          .then((result) => console.log(result))
+          .catch((error) => console.error(error));
+
+
+      }
+
+    </script>
+
 </body>
 
 </html>
